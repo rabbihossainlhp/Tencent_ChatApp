@@ -24,7 +24,7 @@ const importUserToTencent = async (userId,username) =>{
     try{
         const SDKAppID = parseInt(process.env.TRTC_APP_ID);
         const adminSig = generateUserSig('administrator');
-        const random = Math.floor(Math.round() * 10000000);
+        const random = Math.floor(Math.random() * 10000000);
 
         const url = `https://console.tim.qq.com/v4/im_open_login_svc/account_import?sdkappid=${SDKAppID}&identifier=administrator&usersig=${adminSig}&random=${random}&contenttype=json`;
         const response = await axios.post(url,{
@@ -51,11 +51,11 @@ const loginAndGenerateUserSig = async (req,res) =>{
         const {userId,username} = req.body;
 
         if(!userId) return res.status(400).json({
-            seccess:false,
+            success:false,
             error:"user id is required"
         });
 
-        const user = await User.findOne({userId});
+        let user = await User.findOne({userID:userId});
         const newSig = generateUserSig(userId);
         if(!user){
             user = await User.create({

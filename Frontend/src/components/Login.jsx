@@ -51,18 +51,30 @@ export default function Login() {
     <div className='min-h-screen flex items-center justify-center bg-linear-to-br from-indigo-500 to bg-pink-400'>
         <div className="h-1/2 w-1/2 p-10 flex flex-col items-center   rounded-xl bg-emerald-50 shadow-2xl ">
           <div className="content">
-            <h1 className='font-bold text-2xl text-center inline-block'>Welcome to <strong className='text-red-900'>Easy</strong>  Chat..</h1>
+            <p className='bg-red-400 rounded-xs py-1 px-3 text-white font-semibold text-center'>{error? error : ''}</p>
+            <h1 className='font-bold mt-4 text-2xl text-center inline-block'>Welcome to <strong className='text-red-900'>Easy</strong>  Chat..</h1>
             <p className='text-center mt-3 text-xl font-medium'>  <strong className='text-green-600'>Login</strong>| <strong className='text-blue-600'>Join</strong> </p>
             <hr  className='text-amber-800 border-2 mt-1'/>
           </div>
 
-          <form onSubmit={handleLogin}>
+          <form onSubmit={(handleLogin)} className='mt-8 w-full flex flex-col items-center justify-center'>
+              <div className='flex flex-col w-2/3'>
+                <label htmlFor="username" className='font-bold'>UserID</label>
+                <input type="text" placeholder='UserId' value={userId} onChange={(e)=>setUserId(e.target.value)}  className='border w-full rounded-xl py-1 px-3 font-bold'/>
+              </div>
 
+              <div className='flex flex-col mt-3 w-2/3'>
+                <label htmlFor="yourname" className='font-bold'>Your Name (optional)</label>
+                <input type="text" placeholder='Enter your name' value={userName} onChange={(e)=>setUserName(e.target.value)}  className='border w-full rounded-xl py-1 px-3 font-bold'/>
+              </div>
+
+
+              <button type='submit' className='bg-fuchsia-400 py-2 mt-3 hover:cursor-pointer hover:scale-95 transition-all active:scale-100 px-8 font-bold rounded-xl'>
+                {loading ? 'Processing...' : 'Join Here'}
+              </button>
           </form>
 
-          <button className='bg-fuchsia-400 py-2 mt-3 hover:cursor-pointer hover:scale-95 transition-all active:scale-100 px-8 font-bold rounded-xl'>
-            {loading ? 'Processing...' : 'Join Here'}
-          </button>
+          
         </div>
     </div>
   )

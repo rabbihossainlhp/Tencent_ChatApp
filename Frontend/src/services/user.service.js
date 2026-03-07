@@ -2,12 +2,12 @@ const Api_base_url = import.meta.env.VITE_REACT_APP_URL;
 
 export const loginAndGenerateUserSig = async(userId,userName) =>{
     try{
-        const res = fetch(`${Api_base_url}/user`,{
+        const res = await fetch(`${Api_base_url}/user/login`,{
             method:'POST',
             headers:{
                 "Content-Type":"application/json"
             },
-            body:JSON.stringify(userId,userName),
+            body:JSON.stringify({userId,userName}),
         })
 
         const data = await res.json();

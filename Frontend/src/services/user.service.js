@@ -1,5 +1,4 @@
-const Api_base_url = process.env.REACT_APP_URL;
-
+const Api_base_url = import.meta.env.VITE_REACT_APP_URL;
 
 export const loginAndGenerateUserSig = async(userId,userName) =>{
     try{

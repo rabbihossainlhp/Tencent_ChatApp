@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { loginAndGenerateUserSig } from '../services/user.service';
-import {UIKitProvider,useLoginState,loginState,ConversationList, Chat,MessageList,ChatHeader,Avatar,ContactInfo,ContactList,MessageInput,useConversationListState,Profile} from '@tencentcloud/chat-uikit-react';
+import {UIKitProvider,useLoginState,LoginStatus,ConversationList, Chat,MessageList,ChatHeader,Avatar,ContactInfo,ContactList,MessageInput,useConversationListState,Profile} from '@tencentcloud/chat-uikit-react';
+import {IoLogoWechat} from 'react-icons/io5'
+import { IoMdPeople,IoMdLogOut } from "react-icons/io";
 
 
 
@@ -43,7 +45,7 @@ export default function ChatWindow() {
   }
 
   if(loading){
-
+    return <loadingScreen/>
   }
 
   return (
@@ -61,13 +63,107 @@ export default function ChatWindow() {
 
             <div className="w-10 h-[1px] bg-gray-700"></div>
 
+            <TabButton
+              active={activetab === 'chats'}
+              onClick={()=>{
+                setActiveTab('chats')
+                setMobileView('list')
+              }}
+
+              icon={<IoLogoWechat/>}
+              label='Chats'
+            />
+
+
+
+              <TabButton
+              active={activetab === 'contacts'}
+              onClick={()=>{
+                setActiveTab('contacts')
+                setMobileView('list')
+              }}
+
+              icon={<IoMdPeople/>}
+              label='Contacts'
+            />
+
+
+
+
+            <TabButton
+              onClick={handleLogout}
+
+              icon={<IoMdLogOut/>}
+              label='Logout'
+            />
+
+
           </div>
 
-
         </nav>
+
+
+        <main className='flex-1 flex overflow-hidden bg-white relative h-full'>
+              {activetab === 'chats' &&(
+                <ChatView/>
+              )}
+        </main>
+
+
+
       </div>
 
     </UIKitProvider>
 
+  )
+}
+
+
+
+
+//chatview component....
+function ChatView({mobileView,}){
+
+}
+
+
+
+//helper function...
+function TabButton ({activce,onClick,icon,label}){
+  return (
+    <button
+      onClick={onClick}
+      className={`flex flex-col items-center transition-all justify-center p-2  w-full ${activce? 'text-indigo-500 ': 'text-gray-500'}`}
+    >
+      <span className='flex text-xl items-center justify-center'>{icon}</span>
+      <span className='flex text-[10px] uppercase font-bold mt-1'>{label}</span>
+    </button>
+  )
+}
+
+
+
+
+function loginHandler ({SDKAppId,userId,userSig}){
+  const {status} = useLoginState({
+    SDKAppID:parseInt(SDKAppId),
+    userID:userId,
+    userSig 
+  });
+
+  if(status === LoginStatus.ERROR){
+    return(
+      <div className="absolute inset-0 bg-white flex items-center justify-center font-bold">
+        Sync Error. Refresh Page
+      </div>
+    )
+  }
+}
+
+
+
+function loadingScreen(){
+  return (
+    <div className="h-screen flex w-full item-center justify-center bg-white font-medium text-indigo-600 tracking-widest">LOADING...</div>
   )
 }

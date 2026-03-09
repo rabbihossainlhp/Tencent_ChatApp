@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { loginAndGenerateUserSig } from '../services/user.service';
 import {UIKitProvider,useLoginState,LoginStatus,ConversationList, Chat,MessageList,ChatHeader,Avatar,ContactInfo,ContactList,MessageInput,useConversationListState,Profile} from '@tencentcloud/chat-uikit-react';
 import {IoLogoWechat} from 'react-icons/io5'
-import { IoMdPeople,IoMdLogOut } from "react-icons/io";
+import { IoMdPeople,IoMdLogOut, IoMdArrowBack } from "react-icons/io";
 
 
 
@@ -105,7 +105,28 @@ export default function ChatWindow() {
 
         <main className='flex-1 flex overflow-hidden bg-white relative h-full'>
               {activetab === 'chats' &&(
-                <ChatView/>
+                <ChatView mobileView={mobileView} setMobileView={setMobileView}/>
+              )}
+
+              {activetab === 'contacts' &&(
+                <>
+                  <div className={`${mobileView==='list' ? 'flex':'hidden'} md:flex w-full md:w-80 border-r flex-col`}>
+                    <div className="h-16 flex items-center px-4 border-b bg-gray-50 text-gray-800 shrink-0 font-bold text-xl ">
+                      Contacts
+                    </div>
+                    <ContactList onContactItemClick={()=> setMobileView('detail')} />
+                  </div>
+
+                  <div className={`${mobileView==='detail'? 'flex': 'hidden'}`}>
+                    <ContactInfo
+                      onSendMessage={()=>{
+                        setActiveTab('chats');
+                        setMobileView('detail');
+                      }}
+                    />
+
+                  </div>
+                </>
               )}
         </main>
 
@@ -122,8 +143,65 @@ export default function ChatWindow() {
 
 
 //chatview component....
-function ChatView({mobileView,}){
+function ChatView({mobileView,setMobileView}){
+  const {activeConversation} = useConversationListState();
+  
+  useEffect(()=>{
+    if(activeConversation && window.innerWidth < 768){
+    setMobileView('detail');
+  }
+  },[activeConversation,setMobileView])
+  
+  return(
+    <>
+      <div className={`${mobileView === 'list' ? 'flex':'hidden'} md:flex w-full md:w-80 lg:w-96 flex-col border-r bg-white`}
+      style={{height:'100%'}}
+      >
+        <div className="h-16 flex items-center px-4 border-b bg-gray-50 shrink-0 font-bold text-xl">
+          Messages
+        </div>
 
+        <div className='flex-1 overflow-y-auto min-h-0'>
+          <ConversationList 
+          onSelectConversation={()=>setMobileView('detail')}/>
+        </div>
+
+        <div className={`${mobileView==='detail' ? 'flex':'hidden'} md:flex flex-1 flex-col bg-white`}
+        style={{
+          height:'100%',
+          position: mobileView==='detail'?'absolute':'relative',
+          inse:mobileView === 'detail' ? 0 : 'auto',
+          zIndex:mobileView === 'detail ' ? 50 : 'auto',
+          width:'100%'
+        }}
+        >
+          <div className="md:hidden h-14 flex items-center px-4 shrink-0 bg-white border-b z-10">
+            <button 
+              onClick={(e)=>{
+                e.preventDefault();
+                e.stopPropagation();
+                setMobileView('list');
+              }}
+
+              className='flex text-indigo-600 items-center font-bold gap-2'
+            >
+              <IoMdArrowBack size={18}/> Back
+            </button>
+          </div>
+
+          <div className="overflow-hidden flex flex-1 flex-col min-h-0">
+              <Chat>
+                <ChatHeader
+                  onBack={()=> setMobileView('list')}
+                />
+              </Chat>
+              <MessageList/>
+              <MessageInput/>
+          </div>
+        </div>
+      </div>
+    </>
+  )
 }
 
 

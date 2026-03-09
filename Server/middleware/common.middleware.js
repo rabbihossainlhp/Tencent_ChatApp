@@ -7,7 +7,7 @@ const morgan = require("morgan");
 
 //Configure necessary middlewares....here
 const corsOption={
-    origin:process.env.CLIENT_URI,
+    origin:process.env.LIVE_URI,
     credentials:true
 }
 

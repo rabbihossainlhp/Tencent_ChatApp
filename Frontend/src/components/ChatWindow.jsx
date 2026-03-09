@@ -45,7 +45,7 @@ export default function ChatWindow() {
   }
 
   if(loading){
-    return <loadingScreen/>
+    return <LoadingScreen/>
   }
 
   return (
@@ -61,7 +61,7 @@ export default function ChatWindow() {
               <Avatar size={40}/>
             </div>
 
-            <div className="w-10 h-[1px] bg-gray-700"></div>
+            <div className="w-10 h-px bg-gray-700"></div>
 
             <TabButton
               active={activetab === 'chats'}
@@ -180,13 +180,13 @@ export default function ChatWindow() {
         )}
 
         {showProfile && (
-          <div className="absolute inset-0 z-100 flex " 
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" 
             onClick={()=> setShowProfile(false)}
           >
-          </div>
-        )}
 
-        <div className="relative w-72 md:w-80 h-full bg-white flex flex-col">
+          <div className="relative w-72 md:w-80 h-full md:h-auto md:max-h-[90vh] bg-white flex flex-col md:rounded-lg shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
           <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
             <span className='font-bold'>My Profile</span>
             <button
@@ -203,7 +203,13 @@ export default function ChatWindow() {
 
         </div>
 
-        <loginHandler SDKAppID={SDKAppId} userId={userId} userSig={userSig}/>
+
+          </div>
+        )}
+
+        
+
+        <LoginHandler SDKAppID={SDKAppId} userId={userId} userSig={userSig}/>
 
       </div>
 
@@ -267,9 +273,9 @@ function ChatView({mobileView,setMobileView}){
                 <ChatHeader
                   onBack={()=> setMobileView('list')}
                 />
+                <MessageList/>
+                <MessageInput/>
               </Chat>
-              <MessageList/>
-              <MessageInput/>
           </div>
         </div>
       </div>
@@ -280,11 +286,11 @@ function ChatView({mobileView,setMobileView}){
 
 
 //helper function...
-function TabButton ({activce,onClick,icon,label}){
+function TabButton ({active,onClick,icon,label}){
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center transition-all justify-center p-2  w-full ${activce? 'text-indigo-500 ': 'text-gray-500'}`}
+      className={`flex flex-col items-center transition-all justify-center p-2  w-full ${active? 'text-indigo-500 ': 'text-gray-500'}`}
     >
       <span className='flex text-xl items-center justify-center'>{icon}</span>
       <span className='flex text-[10px] uppercase font-bold mt-1'>{label}</span>
@@ -295,9 +301,9 @@ function TabButton ({activce,onClick,icon,label}){
 
 
 
-export function loginHandler ({SDKAppId,userId,userSig}){
+export function LoginHandler ({SDKAppID,userId,userSig}){
   const {status} = useLoginState({
-    SDKAppID:parseInt(SDKAppId),
+    SDKAppID:parseInt(SDKAppID),
     userID:userId,
     userSig 
   });
@@ -313,8 +319,8 @@ export function loginHandler ({SDKAppId,userId,userSig}){
 
 
 
-function loadingScreen(){
+function LoadingScreen(){
   return (
-    <div className="h-screen flex w-full item-center justify-center bg-white font-medium text-indigo-600 tracking-widest">LOADING...</div>
+    <div className="h-screen flex w-full items-center justify-center bg-white font-medium text-indigo-600 tracking-widest">LOADING...</div>
   )
 }

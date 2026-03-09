@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { loginAndGenerateUserSig } from '../services/user.service';
 import {UIKitProvider,useLoginState,LoginStatus,ConversationList, Chat,MessageList,ChatHeader,Avatar,ContactInfo,ContactList,MessageInput,useConversationListState,Profile} from '@tencentcloud/chat-uikit-react';
-import {IoLogoWechat} from 'react-icons/io5'
+import {IoCloseSharp, IoLogoWechat} from 'react-icons/io5'
 import { IoMdPeople,IoMdLogOut, IoMdArrowBack } from "react-icons/io";
 
 
@@ -132,6 +132,79 @@ export default function ChatWindow() {
 
 
 
+        {mobileView === 'list' && (
+          <nav className='w-20 bg-gray-900 md:hidden h-16 flex  items-center text-white py-6 justify-between z-30 '>
+
+            <div className="scale-75 cursor-pointer ml-2"
+              onClick={()=>setShowProfile(true)}
+            >
+              <Avatar size={40}/>
+            </div>
+
+
+            <TabButton
+              active={activetab === 'chats'}
+              onClick={()=>{
+                setActiveTab('chats')
+                setMobileView('list')
+              }}
+
+              icon={<IoLogoWechat/>}
+              label='Chats'
+            />
+
+
+
+              <TabButton
+              active={activetab === 'contacts'}
+              onClick={()=>{
+                setActiveTab('contacts')
+                setMobileView('list')
+              }}
+
+              icon={<IoMdPeople/>}
+              label='Contacts'
+            />
+
+
+
+
+            <TabButton
+              onClick={handleLogout}
+
+              icon={<IoMdLogOut/>}
+              label='Logout'
+            />
+
+        </nav>
+        )}
+
+        {showProfile && (
+          <div className="absolute inset-0 z-100 flex " 
+            onClick={()=> setShowProfile(false)}
+          >
+          </div>
+        )}
+
+        <div className="relative w-72 md:w-80 h-full bg-white flex flex-col">
+          <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
+            <span className='font-bold'>My Profile</span>
+            <button
+            onClick={()=>setShowProfile(false)}
+            className='text-gray-500 hover:text-gray-700  p-2 transition'
+            >
+              <IoCloseSharp size={20}/>
+            </button>
+          </div>
+
+          <div className='flex-1 overflow-y-auto'> 
+            <Profile/>
+          </div>
+
+        </div>
+
+        <loginHandler SDKAppID={SDKAppId} userId={userId} userSig={userSig}/>
+
       </div>
 
     </UIKitProvider>
@@ -222,7 +295,7 @@ function TabButton ({activce,onClick,icon,label}){
 
 
 
-function loginHandler ({SDKAppId,userId,userSig}){
+export function loginHandler ({SDKAppId,userId,userSig}){
   const {status} = useLoginState({
     SDKAppID:parseInt(SDKAppId),
     userID:userId,
